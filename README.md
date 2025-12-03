@@ -23,7 +23,9 @@
 **Focus Bro está diseñado para ser totalmente *screen reactive*, ofreciendo una experiencia fluida tanto en móviles como en tablets.**
 
 <p align="center">
-  <img src="assets/dispositivos_focus_bro.png" 
+  <img src="assets/<img width="864" height="1184" alt="dispositivos focus bro" src="https://github.com/user-attachments/assets/d7f98d5e-41d5-4477-9c6b-e4be40da7c50" />
+
+" 
        alt="Focus Bro en diferentes dispositivos (teléfono y tablet) demostrando diseño adaptable." 
        width="800"
   />
