@@ -1,6 +1,6 @@
 # 📱 Focus Bro
 
-## ⏱️ Aplicación de Productividad Pomodoro para Android
+## ⏱️ Aplicación de Productividad Android
 
 **Focus Bro** es una aplicación móvil **minimalista** y **altamente reactiva** diseñada para ayudarte a dominar la Técnica Pomodoro. Te permite gestionar tu tiempo de manera eficiente alternando bloques de enfoque profundo con descansos estructurados, todo en una interfaz optimizada para cualquier dispositivo Android.
 
@@ -76,19 +76,3 @@ Sigue estos pasos para clonar el proyecto y ejecutarlo en tu máquina local para
     Selecciona un emulador o dispositivo físico y presiona el botón **Run** (▶️).
 
 ---
-
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas, especialmente para añadir nuevas funcionalidades o mejorar el rendimiento del temporizador.
-
-1.  Haz un `fork` del repositorio.
-2.  Crea tu rama de *feature* (`git checkout -b feature/AmazingFeature`).
-3.  Haz *commit* de tus cambios (`git commit -m 'feat: Añade AmazingFeature'`).
-4.  Haz *push* a la rama (`git push origin feature/AmazingFeature`).
-5.  Abre un *Pull Request* (PR).
-
----
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE.md` para más detalles.
