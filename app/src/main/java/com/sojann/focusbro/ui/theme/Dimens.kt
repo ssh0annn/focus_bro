@@ -10,7 +10,7 @@ data class Dimens(
     val iconSizeNormal: Dp = 36.dp,
     val paddingSmall: Dp = 4.dp,
     val paddingNormal: Dp = 8.dp,
-    val paddingMedium: Dp = 16.dp,
+    val paddingMedium: Dp = 35.dp,
     val roundedShapeNormal: Dp = 8.dp,
     val spacerSmall: Dp = 4.dp,
     val spacerNormal: Dp = 8.dp,

@@ -15,11 +15,11 @@ import androidx.compose.ui.graphics.Color
 import com.sojann.focusbro.ui.theme.FocusBroTheme
 
 @Composable
-fun CustomButtom(
+fun CustomButton(
     modifer: Modifier = Modifier,
     text: String,
     textColor: Color,
-    btnColor: Color,
+    buttonColor: Color,
     onTap: () -> Unit ={}
 ){
 
@@ -29,7 +29,7 @@ fun CustomButtom(
             .height(FocusBroTheme.dimens.buttonHeightNormal),
         shape = RoundedCornerShape(FocusBroTheme.dimens.roundedShapeNormal),
         colors = ButtonDefaults.buttonColors(
-            containerColor = btnColor
+            containerColor = buttonColor
         ),
     ) {
 

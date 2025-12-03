@@ -17,7 +17,7 @@ import androidx.compose.ui.res.vectorResource
 import com.sojann.focusbro.ui.theme.FocusBroTheme
 
 @Composable
-fun BorederedIcon(
+fun BorderedIcon(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
     onTap: () -> Unit = {}

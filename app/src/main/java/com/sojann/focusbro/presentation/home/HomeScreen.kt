@@ -13,32 +13,36 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.sojann.focusbro.R
+import com.sojann.focusbro.domain.TimerTypeEnum
 import com.sojann.focusbro.presentation.components.AutoResizedText
-import com.sojann.focusbro.presentation.components.BorederedIcon
+import com.sojann.focusbro.presentation.components.BorderedIcon
 import com.sojann.focusbro.presentation.components.CircleDot
-import com.sojann.focusbro.presentation.components.CustomButtom
+import com.sojann.focusbro.presentation.components.CustomButton
 import com.sojann.focusbro.presentation.components.InformationItem
 import com.sojann.focusbro.presentation.components.TimerTypeItem
 import com.sojann.focusbro.ui.theme.FocusBroTheme
-import java.nio.file.WatchEvent
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: HomeScreenViewModel = HomeScreenViewModel()) {
+    val timeState by remember { mutableStateOf(viewModel.timerValueState) }
+    val timerTypeState by remember { mutableStateOf(viewModel.timerTypeState) }
+    val roundsState by remember { mutableStateOf(viewModel.roundsState) }
+    val todayTimeState by remember { mutableStateOf(viewModel.todayTimeState) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,15 +55,12 @@ fun HomeScreen() {
             contentAlignment = Alignment.TopEnd
         ) {
             Icon(
-                modifier = Modifier.size(FocusBroTheme.dimens.iconSizeSmall),
+                modifier = Modifier.size(FocusBroTheme.dimens.iconSizeNormal),
                 painter = painterResource(id = R.drawable.ic_menu),
-                tint = MaterialTheme.colorScheme.primary,
                 contentDescription = "Menu",
-
-
-                )
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
-
         AutoResizedText(
             text = "Focus Bro",
             textStyle = MaterialTheme.typography.displayMedium.copy(
@@ -67,70 +68,71 @@ fun HomeScreen() {
                 textAlign = TextAlign.Center
             )
         )
-
         Spacer(modifier = Modifier.height(FocusBroTheme.dimens.spacerMedium))
-
-        Row(
-
-        ) {
+        Row {
             CircleDot()
             Spacer(modifier = Modifier.width(FocusBroTheme.dimens.spacerNormal))
             CircleDot()
             Spacer(modifier = Modifier.width(FocusBroTheme.dimens.spacerNormal))
-            CircleDot(
-                color = MaterialTheme.colorScheme.tertiary
-            )
+            CircleDot(color = MaterialTheme.colorScheme.tertiary)
             Spacer(modifier = Modifier.width(FocusBroTheme.dimens.spacerNormal))
-            CircleDot(
-                color = MaterialTheme.colorScheme.tertiary
-            )
-
+            CircleDot(color = MaterialTheme.colorScheme.tertiary)
         }
-        Spacer(modifier = Modifier.width(FocusBroTheme.dimens.spacerNormal))
-
-        TimerSection(timer = "5:00")
-
-        Spacer(modifier = Modifier.width(FocusBroTheme.dimens.spacerNormal))
-        TimerTypeSection()
-
-        Spacer(modifier = Modifier.width(FocusBroTheme.dimens.spacerNormal))
-
+        Spacer(modifier = Modifier.height(FocusBroTheme.dimens.spacerMedium))
+        TimerSession(
+            timer = viewModel.millisToMinutes(timeState.value),
+            onIncreaseTap = {
+                viewModel.onIncreaseTime()
+            },
+            onDecreaseTap = {
+                viewModel.onDecreaseTime()
+            }
+        )
+        Spacer(modifier = Modifier.height(FocusBroTheme.dimens.spacerMedium))
+        TimerTypeSession(
+            type = timerTypeState.value,
+            onTap = { type ->
+                viewModel.onUpdateType(type)
+            }
+        )
+        Spacer(modifier = Modifier.height(FocusBroTheme.dimens.spacerMedium))
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            CustomButtom(
+            CustomButton(
                 text = "Start",
-                btnColor = MaterialTheme.colorScheme.primary,
                 textColor = MaterialTheme.colorScheme.surface,
+                buttonColor = MaterialTheme.colorScheme.primary,
                 onTap = {
-                    TODO()
+                    viewModel.onStartTimer()
                 }
             )
-
-            CustomButtom(
-                text = "RESET",
-                btnColor = MaterialTheme.colorScheme.surface,
+            CustomButton(
+                text = "Reset",
                 textColor = MaterialTheme.colorScheme.primary,
+                buttonColor = MaterialTheme.colorScheme.surface,
                 onTap = {
-                    TODO()
+                    viewModel.onCancelTimer(true)
                 }
             )
         }
-
-        Spacer(modifier = Modifier.width(FocusBroTheme.dimens.spacerNormal))
-
-        InformationSection(round = "10", time = "45:00", modifer = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(FocusBroTheme.dimens.spacerMedium))
+        InformationSession(
+            modifier = Modifier.weight(1f),
+            round = roundsState.value.toString(),
+            time = viewModel.millisToHours(todayTimeState.value)
+        )
     }
 }
 
 @Composable
-fun TimerSection(
+fun TimerSession(
     modifier: Modifier = Modifier,
     timer: String,
-    onIncresedTap: () -> Unit = {},
-    onDecresedTap: () -> Unit = {},
+    onIncreaseTap: () -> Unit = {},
+    onDecreaseTap: () -> Unit = {},
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -143,11 +145,9 @@ fun TimerSection(
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            BorederedIcon(icon = R.drawable.ic_minus, onTap = onDecresedTap)
+            BorderedIcon(icon = R.drawable.ic_minus, onTap = onDecreaseTap)
             Spacer(modifier = Modifier.height(FocusBroTheme.dimens.spacerMedium))
         }
-
-
         AutoResizedText(
             text = timer,
             modifier = Modifier
@@ -158,114 +158,94 @@ fun TimerSection(
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
             )
-
-
         )
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            BorederedIcon(icon = R.drawable.ic_plus, onTap = onIncresedTap)
+            BorderedIcon(icon = R.drawable.ic_plus, onTap = onIncreaseTap)
             Spacer(modifier = Modifier.height(FocusBroTheme.dimens.spacerMedium))
         }
-
     }
 }
 
 @Composable
-fun TimerTypeSection(
+fun TimerTypeSession(
     modifier: Modifier = Modifier,
-    ontap: () -> Unit = {}
+    type: TimerTypeEnum,
+    onTap: (TimerTypeEnum) -> Unit = {}
 ) {
-    val GRIDCOUNT = 3
-    val ITEMSPCAING = Arrangement.spacedBy(FocusBroTheme.dimens.paddingNormal)
-
+    val gridCount = 3
+    val itemsSpacing = Arrangement.spacedBy(FocusBroTheme.dimens.paddingNormal)
     LazyVerticalGrid(
         modifier = modifier
             .fillMaxWidth()
             .height(FocusBroTheme.dimens.spacerLarge),
-        columns = GridCells.Fixed(GRIDCOUNT),
-        horizontalArrangement = ITEMSPCAING,
-        verticalArrangement = ITEMSPCAING,
-
-        ) {
-        item(
-            key = "FB"
-        ) {
-            TimerTypeItem(
-                text = "Focus Brake",
-                textColor = MaterialTheme.colorScheme.primary
-            )
-        }
-
-        item(
-            key = "SB"
+        columns = GridCells.Fixed(gridCount),
+        horizontalArrangement = itemsSpacing,
+        verticalArrangement = itemsSpacing,
+    ) {
+        items(
+            TimerTypeEnum.values(),
+            key = { it.title }
         ) {
             TimerTypeItem(
-                text = "Short Brake",
-                textColor = MaterialTheme.colorScheme.secondary
-            )
-        }
-
-        item(
-            key = "LB"
-        ) {
-            TimerTypeItem(
-                text = "Long Brake",
-                textColor = MaterialTheme.colorScheme.secondary
+                text = it.title,
+                textColor = if (type == it)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.secondary,
+                onTap = { onTap(it) }
             )
         }
     }
-
-
 }
 
 @Composable
-fun InformationSection(
-    modifer: Modifier = Modifier,
+fun InformationSession(
+    modifier: Modifier = Modifier,
     round: String,
-    time: String,
-
-    ) {
+    time: String
+) {
     Box(
-        modifer.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter,
-
-        ) {
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
         Row(
-            modifer.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             InformationItem(
-                modifer = modifer
+                modifier = modifier
                     .fillMaxWidth()
                     .weight(1f),
                 text = round,
                 label = "rounds"
             )
-            Spacer(modifer
-                .fillMaxWidth()
-                .weight(1f))
+            Spacer(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            )
             InformationItem(
-                modifer = modifer
+                modifier = modifier
                     .fillMaxWidth()
                     .weight(1f),
                 text = time,
                 label = "time"
             )
         }
-
     }
 }
 
+
 @Preview(
-    name = "HomePreview",
+    name = "HomeScreenPreview",
     showBackground = true
 )
 @Composable
-fun HomeScreenPre() {
+fun HomeScreenPreview() {
     FocusBroTheme {
         HomeScreen()
     }

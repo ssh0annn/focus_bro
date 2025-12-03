@@ -44,6 +44,7 @@ android {
 dependencies {
 
     implementation("androidx.compose.material3:material3-window-size-class") // Para obtener el size de las pantallas
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")  // Para obtener el size de las pantallas
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
